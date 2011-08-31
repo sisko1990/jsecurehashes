@@ -3,6 +3,7 @@
 /**
  * @version		$Id$
  * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2011 Jan Erik Zassenhaus. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 // No direct access
@@ -11,11 +12,10 @@ defined('_JEXEC') or die;
 jimport('joomla.plugin.plugin');
 
 /**
- * Joomla Authentication plugin
+ * Joomla secure password hashes authentication plugin
  *
  * @package		Joomla.Plugin
- * @subpackage	Authentication.joomla
- * @since 1.5
+ * @subpackage	Authentication.jsecurehashes
  */
 class plgAuthenticationJSecureHashes extends JPlugin
 {
@@ -33,7 +33,7 @@ class plgAuthenticationJSecureHashes extends JPlugin
      * @return	boolean
      * @since 1.5
      */
-    function onUserAuthenticate($credentials, $options, &$response)
+    public function onUserAuthenticate($credentials, $options, &$response)
     {
         jimport('joomla.user.helper');
 
@@ -66,7 +66,7 @@ class plgAuthenticationJSecureHashes extends JPlugin
         $this->user_id = $result->id;
 
         // If password has ":" in it, it is a Joomla! password hash
-        if (($result) && (strpos($result->password, ':') !== false))
+        if (($result) && (substr($result->password, 0, 3) !== '$S$') && (strpos($result->password, ':') !== false))
         {
             $parts = explode(':', $result->password);
             $crypt = $parts[0];
@@ -101,6 +101,13 @@ class plgAuthenticationJSecureHashes extends JPlugin
                 $this->jSecureHashesLogin($credentials, $options, $response);
             }
         }
+        // Check if we have a Drupal hash
+        elseif (($result) && (substr($result->password, 0, 3) === '$S$'))
+        {
+            include_once 'libraries/drupal_password_hash.php';
+
+            user_check_password($credentials['password'], $result->password);
+        }
         else
         {
             $response->status = JAUTHENTICATE_STATUS_FAILURE;
@@ -110,7 +117,7 @@ class plgAuthenticationJSecureHashes extends JPlugin
 
 
 
-    function jSecureHashesUpdateHash($user_id, $password, $hashtype)
+    private function jSecureHashesUpdateHash($user_id, $password, $hashtype)
     {
         $salt = JUserHelper::genRandomPassword(32);
         $crypt = JUserHelper::getCryptedPassword($password, $salt, $hashtype);
@@ -131,13 +138,13 @@ class plgAuthenticationJSecureHashes extends JPlugin
     /**
      * This method should handle any authentication and report back to the subject
      *
-     * @access	public
+     * @access	private
      * @param	array	Array holding the user credentials
      * @param	array	Array of extra options
      * @param	object	Authentication response object
      * @return	boolean
      */
-    function jSecureHashesLogin($credentials, $options, &$response)
+    private function jSecureHashesLogin($credentials, $options, &$response)
     {
         $user = JUser::getInstance($this->user_id); // Bring this in line with the rest of the system
         $response->email = $user->email;
@@ -154,4 +161,3 @@ class plgAuthenticationJSecureHashes extends JPlugin
         $response->error_message = '';
     }
 }
-

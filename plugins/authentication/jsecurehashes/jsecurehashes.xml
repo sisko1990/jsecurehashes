@@ -12,6 +12,7 @@
     <files>
         <filename plugin="jpasswordhashes">jpasswordhashes.php</filename>
         <filename>index.html</filename>
+        <folder>libraries</folder>
     </files>
     <languages>
         <language tag="de-DE">de-DE.plg_authentication_jsecurehashes.ini</language>
