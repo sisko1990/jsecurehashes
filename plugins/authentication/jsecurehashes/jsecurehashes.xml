@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="1.7" type="plugin" group="auth" method="upgrade">
+    <name>PLG_AUTH_JSECUREHASHES</name>
+    <author>Jan Erik Zassenhaus</author>
+    <creationDate>August 2011</creationDate>
+    <copyright>Copyright (C) 2011 Jan Erik Zassenhaus. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+    <authorEmail>jan.zassenhaus@jgerman.de</authorEmail>
+    <authorUrl>www.jgerman.de</authorUrl>
+    <version>1.7.0</version>
+    <description>PLG_AUTH_JSECUREHASHES_XML_DESCRIPTION</description>
+    <files>
+        <filename plugin="jpasswordhashes">jpasswordhashes.php</filename>
+        <filename>index.html</filename>
+    </files>
+    <languages>
+        <language tag="de-DE">de-DE.plg_authentication_jsecurehashes.ini</language>
+        <language tag="de-DE">de-DE.plg_authentication_jsecurehashes.sys.ini</language>
+    </languages>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field name="hashalgorithm" type="groupedlist" default="md5-hex" description="PLG_AUTH_JSECUREHASHES_FIELD_HASHALGORITHM_DESC" label="PLG_AUTH_JSECUREHASHES_FIELD_HASHALGORITHM_LABEL">
+                    <group label="PLG_AUTH_JSECUREHASHES_GROUPFIELD_DRUPALHASH">
+                        <option value="drupal">PLG_AUTH_JSECUREHASHES_GROUPFIELD_DRUPALHASH_SSHA_512</option>
+                    </group>
+                    <group label="PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES">
+                        <option value="ssha">PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES_SSHA</option>
+                        <option value="sha">PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES_SHA</option>
+                        <option value="crypt">PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES_CRYPT</option>
+                        <option value="smd5">PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES_SMD5</option>
+                        <option value="md5-hex">PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES_MD5_HEX</option>
+                        <option value="aprmd5">PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES_APRMD5</option>
+                        <option value="md5-base64">PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES_MD5_BASE64</option>
+                        <option value="plain">PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES_PLAIN</option>
+                    </group>
+                </field>
+            </fieldset>
+        </fields>
+    </config>
+</extension>
