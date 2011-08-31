@@ -103,6 +103,65 @@ function _password_base64_encode($input, $count)
 
 
 /**
+ * Returns a string of highly randomized bytes (over the full 8-bit range).
+ *
+ * This function is better than simply calling mt_rand() or any other built-in
+ * PHP function because it can return a long string of bytes (compared to < 4
+ * bytes normally from mt_rand()) and uses the best available pseudo-random source.
+ *
+ * @param $count
+ *   The number of characters (bytes) to return in the string.
+ */
+function drupal_random_bytes($count)
+{
+    // $random_state does not use drupal_static as it stores random bytes.
+    static $random_state, $bytes;
+    // Initialize on the first call. The contents of $_SERVER includes a mix of
+    // user-specific and system information that varies a little with each page.
+    if (!isset($random_state))
+    {
+        $random_state = print_r($_SERVER, TRUE);
+        if (function_exists('getmypid'))
+        {
+            // Further initialize with the somewhat random PHP process ID.
+            $random_state .= getmypid();
+        }
+        $bytes = '';
+    }
+    if (strlen($bytes) < $count)
+    {
+        // /dev/urandom is available on many *nix systems and is considered the
+        // best commonly available pseudo-random source.
+        if ($fh = @fopen('/dev/urandom', 'rb'))
+        {
+            // PHP only performs buffered reads, so in reality it will always read
+            // at least 4096 bytes. Thus, it costs nothing extra to read and store
+            // that much so as to speed any additional invocations.
+            $bytes .= fread($fh, max(4096, $count));
+            fclose($fh);
+        }
+        // If /dev/urandom is not available or returns no bytes, this loop will
+        // generate a good set of pseudo-random bytes on any system.
+        // Note that it may be important that our $random_state is passed
+        // through hash() prior to being rolled into $output, that the two hash()
+        // invocations are different, and that the extra input into the first one -
+        // the microtime() - is prepended rather than appended. This is to avoid
+        // directly leaking $random_state via the $output stream, which could
+        // allow for trivial prediction of further "random" numbers.
+        while (strlen($bytes) < $count)
+        {
+            $random_state = hash('sha256', microtime() . mt_rand() . $random_state);
+            $bytes .= hash('sha256', mt_rand() . $random_state, TRUE);
+        }
+    }
+    $output = substr($bytes, 0, $count);
+    $bytes = substr($bytes, $count);
+    return $output;
+}
+
+
+
+/**
  * Generates a random base 64-encoded salt prefixed with settings for the hash.
  *
  * Proper use of salts may defeat a number of attacks, including:
@@ -270,21 +329,21 @@ function user_hash_password($password, $count_log2 = 0)
  *   The password hash from the database
  *
  * @return
- *   TRUE or FALSE.
+ *   true or false
  */
 function user_check_password($password, $stored_hash)
 {
-    $type = substr($stored_hash, 0, 3);
-    switch ($type)
+    // A normal Drupal 7 password using sha512.
+    $hash = _password_crypt('sha512', $password, $stored_hash);
+
+    if ($hash && $stored_hash === $hash)
     {
-        case '$S$':
-            // A normal Drupal 7 password using sha512.
-            $hash = _password_crypt('sha512', $password, $stored_hash);
-            break;
-        default:
-            return FALSE;
+        return true;
     }
-    return ($hash && $stored_hash == $hash);
+    else
+    {
+        return false;
+    }
 }
 
 
@@ -295,27 +354,31 @@ function user_check_password($password, $stored_hash)
  * This is typically called during the login process when the plain text
  * password is available. A new hash is needed when the desired iteration count
  * has changed through a change in the variable password_count_log2 or
- * DRUPAL_HASH_COUNT or if the user's password hash was generated in an update
- * like user_update_7000().
- *
- * Alternative implementations of this function might use other criteria based
- * on the fields in $account.
+ * DRUPAL_HASH_COUNT.
  *
  * @param $stored_hash
  *   The password hash from the database
  *
  * @return
- *   TRUE or FALSE.
+ *   true or false
  */
 function user_needs_new_hash($stored_hash)
 {
     // Check whether this was an updated password.
     if ((substr($stored_hash, 0, 3) != '$S$') || (strlen($stored_hash) != DRUPAL_HASH_LENGTH))
     {
-        return TRUE;
+        return true;
     }
+
     // Ensure that $count_log2 is within set bounds.
     $count_log2 = _password_enforce_log2_boundaries(DRUPAL_HASH_COUNT);
     // Check whether the iteration count used differs from the standard number.
-    return (_password_get_count_log2($stored_hash) !== $count_log2);
+    if (_password_get_count_log2($stored_hash) !== $count_log2)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }

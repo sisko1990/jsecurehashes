@@ -20,18 +20,21 @@ jimport('joomla.plugin.plugin');
 class plgAuthenticationJSecureHashes extends JPlugin
 {
     private $user_id = '';
+    private $password = '';
+    private $hash = '';
+    private $param_hashalgorithm = '';
+    private $available_jhashes = array('ssha', 'sha', 'crypt', 'smd5', 'md5-hex', 'aprmd5', 'md5-base64', 'plain');
 
 
 
     /**
-     * This method should handle any authentication and report back to the subject
+     * This method should handle any authentication and report back to the subject.
      *
      * @access	public
      * @param	array	Array holding the user credentials
      * @param	array	Array of extra options
      * @param	object	Authentication response object
      * @return	boolean
-     * @since 1.5
      */
     public function onUserAuthenticate($credentials, $options, &$response)
     {
@@ -48,8 +51,8 @@ class plgAuthenticationJSecureHashes extends JPlugin
 
         // Initialise variables.
         $conditions = '';
-        $param_hashalgorithm = $this->params->get('hashalgorithm');
-        $available_jhashes = array('ssha', 'sha', 'crypt', 'smd5', 'md5-hex', 'aprmd5', 'md5-base64', 'plain');
+        $this->param_hashalgorithm = $this->params->get('hashalgorithm');
+        $this->password = $credentials['password'];
 
         // Get a database object
         $db = JFactory::getDbo();
@@ -64,49 +67,54 @@ class plgAuthenticationJSecureHashes extends JPlugin
 
         // Save the result for later use
         $this->user_id = $result->id;
+        $this->hash = $result->password;
 
-        // If password has ":" in it, it is a Joomla! password hash
-        if (($result) && (substr($result->password, 0, 3) !== '$S$') && (strpos($result->password, ':') !== false))
+        if ($result)
         {
-            $parts = explode(':', $result->password);
-            $crypt = $parts[0];
-            $salt = @$parts[1];
-            $testcrypt = JUserHelper::getCryptedPassword($credentials['password'], $salt, $param_hashalgorithm);
-
-            if ($crypt !== $testcrypt)
+            switch ($this->param_hashalgorithm)
             {
-                $invalid_auth = true;
-
-                foreach ($available_jhashes as $hashtype)
-                {
-                    $testcrypt = JUserHelper::getCryptedPassword($credentials['password'], $salt, $hashtype);
-                    if (($crypt === $testcrypt) && ($hashtype !== $param_hashalgorithm))
+                // The current algorithm for all users is a Joomla! one
+                case in_array($this->param_hashalgorithm, $this->available_jhashes):
+                    if ($this->jSecureHashesCheckJoomlaPassword() === true)
                     {
-                        $this->jSecureHashesUpdateHash($this->user_id, $credentials['password'], $param_hashalgorithm);
                         $this->jSecureHashesLogin($credentials, $options, $response);
-
-                        $invalid_auth = false;
-                        break;
                     }
-                }
+                    elseif ($this->jSecureHashesCheckDrupalPassword() === true)
+                    {
+                        $this->jSecureHashesUpdateJoomlaHash();
+                        $this->jSecureHashesLogin($credentials, $options, $response);
+                    }
+                    else
+                    {
+                        $response->status = JAUTHENTICATE_STATUS_FAILURE;
+                        $response->error_message = JText::_('JGLOBAL_AUTH_INVALID_PASS');
+                    }
+                    break;
 
-                if ($invalid_auth === true)
-                {
+                // The current algorithm for all users is a Drupal one
+                case 'drupal':
+                    if ($this->jSecureHashesCheckDrupalPassword() === true)
+                    {
+                        $this->jSecureHashesLogin($credentials, $options, $response);
+                    }
+                    elseif ($this->jSecureHashesCheckJoomlaPassword() === true)
+                    {
+                        // Update to Drupal hash
+                        $this->jSecureHashesUpdateDrupalHash();
+                        $this->jSecureHashesLogin($credentials, $options, $response);
+                    }
+                    else
+                    {
+                        $response->status = JAUTHENTICATE_STATUS_FAILURE;
+                        $response->error_message = JText::_('JGLOBAL_AUTH_INVALID_PASS');
+                    }
+                    break;
+
+                default:
                     $response->status = JAUTHENTICATE_STATUS_FAILURE;
-                    $response->error_message = JText::_('JGLOBAL_AUTH_INVALID_PASS');
-                }
+                    $response->error_message = JText::_('JGLOBAL_AUTH_NO_USER');
+                    break;
             }
-            elseif ($crypt === $testcrypt)
-            {
-                $this->jSecureHashesLogin($credentials, $options, $response);
-            }
-        }
-        // Check if we have a Drupal hash
-        elseif (($result) && (substr($result->password, 0, 3) === '$S$'))
-        {
-            include_once 'libraries/drupal_password_hash.php';
-
-            user_check_password($credentials['password'], $result->password);
         }
         else
         {
@@ -117,10 +125,91 @@ class plgAuthenticationJSecureHashes extends JPlugin
 
 
 
-    private function jSecureHashesUpdateHash($user_id, $password, $hashtype)
+    /**
+     * This method checks if we have a valid Joomla! user password. If not return false.
+     *
+     * @access private
+     * @return boolean
+     */
+    private function jSecureHashesCheckJoomlaPassword()
+    {
+        // If password has ":" in it, it is a Joomla! password hash
+        if ((substr($this->hash, 0, 3) !== '$S$') && (strpos($this->hash, ':') !== false))
+        {
+            $parts = explode(':', $this->hash);
+            $crypt = $parts[0];
+            $salt = @$parts[1];
+            $testcrypt = JUserHelper::getCryptedPassword($this->password, $salt, $this->param_hashalgorithm);
+
+            if ($crypt === $testcrypt)
+            {
+                return true;
+            }
+            else
+            {
+                foreach ($this->available_jhashes as $hashtype)
+                {
+                    $testcrypt = JUserHelper::getCryptedPassword($this->password, $salt, $hashtype);
+                    if ($crypt === $testcrypt)
+                    {
+                        $this->jSecureHashesUpdateJoomlaHash($this->password, $this->param_hashalgorithm);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+
+    /**
+     * This method checks if we have a valid Drupal! user password. If not return false.
+     *
+     * @access private
+     * @return boolean false
+     */
+    private function jSecureHashesCheckDrupalPassword()
+    {
+         // Check if we have a Drupal hash
+        if (substr($this->hash, 0, 3) === '$S$')
+        {
+            include_once 'libraries/drupal_password_hash.php';
+
+            if (user_check_password($this->password, $this->hash) === true)
+            {
+                if (user_needs_new_hash($this->hash) === true)
+                {
+                    $this->jSecureHashesUpdateDrupalHash();
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+
+    /**
+     * This methode updates the password field in the database with a new Joomla! password hash.
+     *
+     * @access private
+     */
+    private function jSecureHashesUpdateJoomlaHash()
     {
         $salt = JUserHelper::genRandomPassword(32);
-        $crypt = JUserHelper::getCryptedPassword($password, $salt, $hashtype);
+        $crypt = JUserHelper::getCryptedPassword($this->password, $salt, $this->param_hashalgorithm);
         $newHash = $crypt . ':' . $salt;
 
         // Get a database object
@@ -129,14 +218,37 @@ class plgAuthenticationJSecureHashes extends JPlugin
         $db->setQuery(
             'UPDATE #__users' .
             ' SET password = "' . $newHash . '"' .
-            ' WHERE id = ' . $user_id
+            ' WHERE id = ' . $this->user_id
         )->query();
     }
 
 
 
     /**
-     * This method should handle any authentication and report back to the subject
+     * This methode updates the password field in the database with a new Drupal password hash.
+     *
+     * @access private
+     */
+    private function jSecureHashesUpdateDrupalHash()
+    {
+        include_once 'libraries/drupal_password_hash.php';
+
+        $newHash = user_hash_password(trim($this->password));
+
+        // Get a database object
+        $db = JFactory::getDbo();
+
+        $db->setQuery(
+            'UPDATE #__users' .
+            ' SET password = "' . $newHash . '"' .
+            ' WHERE id = ' . $this->user_id
+        )->query();
+    }
+
+
+
+    /**
+     * This method should handle a successful authentication and report back to the subject.
      *
      * @access	private
      * @param	array	Array holding the user credentials
