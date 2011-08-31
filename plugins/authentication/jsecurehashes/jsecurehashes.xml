@@ -36,7 +36,14 @@
                         <option value="plain">PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES_PLAIN</option>
                     </group>
                 </field>
+                <field name="emaillogin" type="radio" default="0" description="PLG_AUTH_JSECUREHASHES_FIELD_EMAILLOGIN_DESC" label="PLG_AUTH_JSECUREHASHES_FIELD_EMAILLOGIN_LABEL">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
             </fieldset>
         </fields>
     </config>
+    <updateservers>
+        <server type="collection" priority="1" name="Joomla! Secure Password Hashes">http://update.jupdater.de/extensions.xml</server>
+    </updateservers>
 </extension>

@@ -23,6 +23,7 @@ class plgAuthenticationJSecureHashes extends JPlugin
     private $password = '';
     private $hash = '';
     private $param_hashalgorithm = '';
+    private $param_emaillogin = '';
     private $available_jhashes = array('ssha', 'sha', 'crypt', 'smd5', 'md5-hex', 'aprmd5', 'md5-base64', 'plain');
 
 
@@ -51,6 +52,7 @@ class plgAuthenticationJSecureHashes extends JPlugin
 
         // Initialise variables.
         $conditions = '';
+        $this->param_emaillogin = $this->params->get('emaillogin');
         $this->param_hashalgorithm = $this->params->get('hashalgorithm');
         $this->password = $credentials['password'];
 
@@ -60,7 +62,14 @@ class plgAuthenticationJSecureHashes extends JPlugin
 
         $query->select('id, password');
         $query->from('#__users');
-        $query->where('username=' . $db->Quote($credentials['username']));
+        if ($this->param_emaillogin == '1')
+        {
+            $query->where('username = ' . $db->Quote($credentials['username']) . ' OR email = ' . $db->Quote($credentials['username']));
+        }
+        else
+        {
+            $query->where('username = ' . $db->Quote($credentials['username']));
+        }
 
         $db->setQuery($query);
         $result = $db->loadObject();
@@ -175,7 +184,7 @@ class plgAuthenticationJSecureHashes extends JPlugin
      */
     private function jSecureHashesCheckDrupalPassword()
     {
-         // Check if we have a Drupal hash
+        // Check if we have a Drupal hash
         if (substr($this->hash, 0, 3) === '$S$')
         {
             include_once 'libraries/drupal_password_hash.php';
@@ -259,6 +268,7 @@ class plgAuthenticationJSecureHashes extends JPlugin
     private function jSecureHashesLogin($credentials, $options, &$response)
     {
         $user = JUser::getInstance($this->user_id); // Bring this in line with the rest of the system
+        $response->username = $user->username;
         $response->email = $user->email;
         $response->fullname = $user->name;
         if (JFactory::getApplication()->isAdmin())
