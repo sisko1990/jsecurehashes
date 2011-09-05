@@ -24,7 +24,7 @@ class plgAuthenticationJSecureHashes extends JPlugin
     private $hash = '';
     private $param_hashalgorithm = '';
     private $param_emaillogin = '';
-    private $available_jhashes = array('ssha', 'sha', 'crypt', 'smd5', 'md5-hex', 'aprmd5', 'md5-base64', 'plain');
+    private $available_jhashes = array('ssha', 'sha', 'crypt', 'smd5', 'md5-hex', 'aprmd5', 'md5-base64');
 
 
 

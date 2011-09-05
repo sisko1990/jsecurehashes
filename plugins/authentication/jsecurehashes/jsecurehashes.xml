@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="1.7" type="plugin" group="auth" method="upgrade">
+<extension version="1.7" type="plugin" group="authentication" method="upgrade">
     <name>PLG_AUTH_JSECUREHASHES</name>
     <author>Jan Erik Zassenhaus</author>
     <creationDate>August 2011</creationDate>
@@ -10,13 +10,15 @@
     <version>1.0</version>
     <description>PLG_AUTH_JSECUREHASHES_XML_DESCRIPTION</description>
     <files>
-        <filename plugin="jpasswordhashes">jpasswordhashes.php</filename>
+        <filename plugin="jsecurehashes">jsecurehashes.php</filename>
         <filename>index.html</filename>
         <folder>libraries</folder>
     </files>
     <languages>
-        <language tag="de-DE">de-DE.plg_authentication_jsecurehashes.ini</language>
-        <language tag="de-DE">de-DE.plg_authentication_jsecurehashes.sys.ini</language>
+        <language tag="en-GB">languages/en-GB/en-GB.plg_authentication_jsecurehashes.ini</language>
+        <language tag="en-GB">languages/en-GB/en-GB.plg_authentication_jsecurehashes.sys.ini</language>
+        <language tag="de-DE">languages/de-DE/de-DE.plg_authentication_jsecurehashes.ini</language>
+        <language tag="de-DE">languages/de-DE/de-DE.plg_authentication_jsecurehashes.sys.ini</language>
     </languages>
     <config>
         <fields name="params">
@@ -33,7 +35,6 @@
                         <option value="md5-hex">PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES_MD5_HEX</option>
                         <option value="aprmd5">PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES_APRMD5</option>
                         <option value="md5-base64">PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES_MD5_BASE64</option>
-                        <option value="plain">PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES_PLAIN</option>
                     </group>
                 </field>
                 <field name="emaillogin" type="radio" default="0" description="PLG_AUTH_JSECUREHASHES_FIELD_EMAILLOGIN_DESC" label="PLG_AUTH_JSECUREHASHES_FIELD_EMAILLOGIN_LABEL">
@@ -44,6 +45,6 @@
         </fields>
     </config>
     <updateservers>
-        <server type="collection" priority="1" name="Joomla! Secure Password Hashes">http://update.jupdater.de/extensions.xml</server>
+        <server type="collection" priority="1" name="J! Secure Password Hashes">http://update.jupdater.de/extensions.xml</server>
     </updateservers>
 </extension>
