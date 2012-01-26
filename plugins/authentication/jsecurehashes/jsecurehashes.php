@@ -1,11 +1,11 @@
 <?php
-
 /**
- * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @version   $Id$
+ * @copyright	Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
  * @copyright	Copyright (C) 2011 Jan Erik Zassenhaus. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @license   GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 // No direct access
 defined('_JEXEC') or die;
 
@@ -14,8 +14,8 @@ jimport('joomla.plugin.plugin');
 /**
  * Joomla secure password hashes authentication plugin
  *
- * @package		Joomla.Plugin
- * @subpackage	Authentication.jsecurehashes
+ * @package    Joomla.Plugin
+ * @subpackage Authentication.jsecurehashes
  */
 class plgAuthenticationJSecureHashes extends JPlugin
 {
@@ -31,11 +31,11 @@ class plgAuthenticationJSecureHashes extends JPlugin
     /**
      * This method should handle any authentication and report back to the subject.
      *
-     * @access	public
-     * @param	array	Array holding the user credentials
-     * @param	array	Array of extra options
-     * @param	object	Authentication response object
-     * @return	boolean
+     * @access public
+     * @param	 array	 Array holding the user credentials
+     * @param	 array	 Array of extra options
+     * @param	 object	 Authentication response object
+     * @return boolean
      */
     public function onUserAuthenticate($credentials, $options, &$response)
     {
@@ -45,7 +45,7 @@ class plgAuthenticationJSecureHashes extends JPlugin
         // Joomla does not like blank passwords
         if (empty($credentials['password']))
         {
-            $response->status = JAUTHENTICATE_STATUS_FAILURE;
+            $response->status = JAuthentication::STATUS_FAILURE;
             $response->error_message = JText::_('JGLOBAL_AUTH_EMPTY_PASS_NOT_ALLOWED');
             return false;
         }
@@ -95,7 +95,7 @@ class plgAuthenticationJSecureHashes extends JPlugin
                     }
                     else
                     {
-                        $response->status = JAUTHENTICATE_STATUS_FAILURE;
+                        $response->status = JAuthentication::STATUS_FAILURE;
                         $response->error_message = JText::_('JGLOBAL_AUTH_INVALID_PASS');
                     }
                     break;
@@ -114,20 +114,20 @@ class plgAuthenticationJSecureHashes extends JPlugin
                     }
                     else
                     {
-                        $response->status = JAUTHENTICATE_STATUS_FAILURE;
+                        $response->status = JAuthentication::STATUS_FAILURE;
                         $response->error_message = JText::_('JGLOBAL_AUTH_INVALID_PASS');
                     }
                     break;
 
                 default:
-                    $response->status = JAUTHENTICATE_STATUS_FAILURE;
+                    $response->status = JAuthentication::STATUS_FAILURE;
                     $response->error_message = JText::_('JGLOBAL_AUTH_NO_USER');
                     break;
             }
         }
         else
         {
-            $response->status = JAUTHENTICATE_STATUS_FAILURE;
+            $response->status = JAuthentication::STATUS_FAILURE;
             $response->error_message = JText::_('JGLOBAL_AUTH_NO_USER');
         }
     }
@@ -180,7 +180,7 @@ class plgAuthenticationJSecureHashes extends JPlugin
      * This method checks if we have a valid Drupal! user password. If not return false.
      *
      * @access private
-     * @return boolean false
+     * @return boolean
      */
     private function jSecureHashesCheckDrupalPassword()
     {
@@ -259,11 +259,11 @@ class plgAuthenticationJSecureHashes extends JPlugin
     /**
      * This method should handle a successful authentication and report back to the subject.
      *
-     * @access	private
-     * @param	array	Array holding the user credentials
-     * @param	array	Array of extra options
-     * @param	object	Authentication response object
-     * @return	boolean
+     * @access private
+     * @param	 array  Array holding the user credentials
+     * @param	 array  Array of extra options
+     * @param	 object	Authentication response object
+     * @return boolean
      */
     private function jSecureHashesLogin($credentials, $options, &$response)
     {
@@ -279,7 +279,7 @@ class plgAuthenticationJSecureHashes extends JPlugin
         {
             $response->language = $user->getParam('language');
         }
-        $response->status = JAUTHENTICATE_STATUS_SUCCESS;
+        $response->status = JAuthentication::STATUS_FAILURE;
         $response->error_message = '';
     }
 }
