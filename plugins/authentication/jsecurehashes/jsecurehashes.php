@@ -279,7 +279,7 @@ class plgAuthenticationJSecureHashes extends JPlugin
         {
             $response->language = $user->getParam('language');
         }
-        $response->status = JAuthentication::STATUS_FAILURE;
+        $response->status = JAuthentication::STATUS_SUCCESS;
         $response->error_message = '';
     }
 }
