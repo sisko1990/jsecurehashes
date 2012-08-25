@@ -1,11 +1,11 @@
 <?php
+
 /**
  * @version   $Id$
  * @copyright	Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
  * @copyright	Copyright (C) 2011 Jan Erik Zassenhaus. All rights reserved.
  * @license   GNU General Public License version 2 or later; see LICENSE.txt
  */
-
 // No direct access
 defined('_JEXEC') or die;
 
@@ -23,10 +23,8 @@ class plgAuthenticationJSecureHashes extends JPlugin
     private $password = '';
     private $hash = '';
     private $param_hashalgorithm = '';
-    private $param_emaillogin = '';
+    private $param_loginalternative = '';
     private $available_jhashes = array('ssha', 'sha', 'crypt', 'smd5', 'md5-hex', 'aprmd5', 'md5-base64');
-
-
 
     /**
      * This method should handle any authentication and report back to the subject.
@@ -52,8 +50,8 @@ class plgAuthenticationJSecureHashes extends JPlugin
 
         // Initialise variables.
         $conditions = '';
-        $this->param_emaillogin = $this->params->get('emaillogin');
         $this->param_hashalgorithm = $this->params->get('hashalgorithm');
+        $this->param_loginalternative = $this->params->get('loginalternative');
         $this->password = $credentials['password'];
 
         // Get a database object
@@ -62,9 +60,13 @@ class plgAuthenticationJSecureHashes extends JPlugin
 
         $query->select('id, password');
         $query->from('#__users');
-        if ($this->param_emaillogin == '1')
+        if ($this->param_loginalternative === 'username_and_email')
         {
             $query->where('username = ' . $db->Quote($credentials['username']) . ' OR email = ' . $db->Quote($credentials['username']));
+        }
+        elseif ($this->param_loginalternative === 'email_only')
+        {
+            $query->where('email = ' . $db->Quote($credentials['username']));  
         }
         else
         {
@@ -282,4 +284,7 @@ class plgAuthenticationJSecureHashes extends JPlugin
         $response->status = JAuthentication::STATUS_SUCCESS;
         $response->error_message = '';
     }
+
+
+
 }

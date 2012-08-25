@@ -2,12 +2,12 @@
 <extension version="2.5" type="plugin" group="authentication" method="upgrade">
     <name>PLG_AUTH_JSECUREHASHES</name>
     <author>Jan Erik Zassenhaus</author>
-    <creationDate>January 2012</creationDate>
+    <creationDate>August 2012</creationDate>
     <copyright>Copyright (C) 2011 Jan Erik Zassenhaus. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>jan.zassenhaus@jgerman.de</authorEmail>
     <authorUrl>www.jgerman.de</authorUrl>
-    <version>1.1</version>
+    <version>1.2</version>
     <description>PLG_AUTH_JSECUREHASHES_XML_DESCRIPTION</description>
     <files>
         <filename plugin="jsecurehashes">jsecurehashes.php</filename>
@@ -37,10 +37,11 @@
                         <option value="md5-base64">PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES_MD5_BASE64</option>
                     </group>
                 </field>
-                <field name="emaillogin" type="radio" default="0" description="PLG_AUTH_JSECUREHASHES_FIELD_EMAILLOGIN_DESC" label="PLG_AUTH_JSECUREHASHES_FIELD_EMAILLOGIN_LABEL">
-                    <option value="1">JYES</option>
-                    <option value="0">JNO</option>
-                </field>
+                <field name="loginalternative" type="radio" default="username_only" description="PLG_AUTH_JSECUREHASHES_FIELD_LOGINALTERNATIVE_DESC" label="PLG_AUTH_JSECUREHASHES_FIELD_LOGINALTERNATIVE_LABEL">
+					          <option value="username_only">PLG_AUTH_JSECUREHASHES_RADIO_LOGINALTERNATIVE_USERNAME_ONLY</option>
+					          <option value="email_only">PLG_AUTH_JSECUREHASHES_RADIO_LOGINALTERNATIVE_EMAIL_ONLY</option>
+					          <option value="username_and_email">PLG_AUTH_JSECUREHASHES_RADIO_LOGINALTERNATIVE_BOTH</option>
+				        </field>
             </fieldset>
         </fields>
     </config>
