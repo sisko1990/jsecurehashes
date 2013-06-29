@@ -1,14 +1,12 @@
 <?php
 
 /**
- * @version		$Id$
- * @copyright	Copyright (C) Drupal. All rights reserved.
- * @copyright	Copyright (C) 2011 Jan Erik Zassenhaus - Joomla! Secure Password Hashes. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright Copyright (C) Drupal. All rights reserved.
+ * @copyright Copyright (C) 2011 Jan Erik Zassenhaus - Joomla! Secure Password Hashes. All rights reserved.
+ * @license   GNU General Public License version 2 or later; see LICENSE.txt
  */
 /**
- * @file
- * Secure password hashing functions for user authentication.
+ * @file JPHANtOM
  *
  * Based on the Portable PHP password hashing framework.
  * @see http://www.openwall.com/phpass/
@@ -44,7 +42,6 @@ define('DRUPAL_MAX_HASH_COUNT', 30);
 define('DRUPAL_HASH_LENGTH', 55);
 
 
-
 /**
  * Returns a string for mapping an int to the corresponding base 64 character.
  */
@@ -52,7 +49,6 @@ function _password_itoa64()
 {
     return './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 }
-
 
 
 /**
@@ -69,7 +65,7 @@ function _password_itoa64()
 function _password_base64_encode($input, $count)
 {
     $output = '';
-    $i = 0;
+    $i      = 0;
     $itoa64 = _password_itoa64();
     do
     {
@@ -94,12 +90,10 @@ function _password_base64_encode($input, $count)
             break;
         }
         $output .= $itoa64[($value >> 18) & 0x3f];
-    }
-    while ($i < $count);
+    } while ($i < $count);
 
     return $output;
 }
-
 
 
 /**
@@ -120,7 +114,7 @@ function drupal_random_bytes($count)
     // user-specific and system information that varies a little with each page.
     if (!isset($random_state))
     {
-        $random_state = print_r($_SERVER, TRUE);
+        $random_state = print_r($_SERVER, true);
         if (function_exists('getmypid'))
         {
             // Further initialize with the somewhat random PHP process ID.
@@ -151,14 +145,14 @@ function drupal_random_bytes($count)
         while (strlen($bytes) < $count)
         {
             $random_state = hash('sha256', microtime() . mt_rand() . $random_state);
-            $bytes .= hash('sha256', mt_rand() . $random_state, TRUE);
+            $bytes .= hash('sha256', mt_rand() . $random_state, true);
         }
     }
     $output = substr($bytes, 0, $count);
-    $bytes = substr($bytes, $count);
+    $bytes  = substr($bytes, $count);
+
     return $output;
 }
-
 
 
 /**
@@ -187,9 +181,9 @@ function _password_generate_salt($count_log2)
     $output .= $itoa64[$count_log2];
     // 6 bytes is the standard salt for a portable phpass hash.
     $output .= _password_base64_encode(drupal_random_bytes(6), 6);
+
     return $output;
 }
-
 
 
 /**
@@ -213,9 +207,8 @@ function _password_enforce_log2_boundaries($count_log2)
         return DRUPAL_MAX_HASH_COUNT;
     }
 
-    return (int) $count_log2;
+    return (int)$count_log2;
 }
-
 
 
 /**
@@ -245,40 +238,39 @@ function _password_crypt($algo, $password, $setting)
 
     if ($setting[0] != '$' || $setting[2] != '$')
     {
-        return FALSE;
+        return false;
     }
     $count_log2 = _password_get_count_log2($setting);
     // Hashes may be imported from elsewhere, so we allow != DRUPAL_HASH_COUNT
     if ($count_log2 < DRUPAL_MIN_HASH_COUNT || $count_log2 > DRUPAL_MAX_HASH_COUNT)
     {
-        return FALSE;
+        return false;
     }
     $salt = substr($setting, 4, 8);
     // Hashes must have an 8 character salt.
     if (strlen($salt) != 8)
     {
-        return FALSE;
+        return false;
     }
 
     // Convert the base 2 logarithm into an integer.
     $count = 1 << $count_log2;
 
     // We rely on the hash() function being available in PHP 5.2+.
-    $hash = hash($algo, $salt . $password, TRUE);
+    $hash = hash($algo, $salt . $password, true);
     do
     {
-        $hash = hash($algo, $hash . $password, TRUE);
-    }
-    while (--$count);
+        $hash = hash($algo, $hash . $password, true);
+    } while (--$count);
 
-    $len = strlen($hash);
+    $len    = strlen($hash);
     $output = $setting . _password_base64_encode($hash, $len);
     // _password_base64_encode() of a 16 byte MD5 will always be 22 characters.
     // _password_base64_encode() of a 64 byte sha512 will always be 86 characters.
     $expected = 12 + ceil((8 * $len) / 6);
-    return (strlen($output) == $expected) ? substr($output, 0, DRUPAL_HASH_LENGTH) : FALSE;
-}
 
+    return (strlen($output) == $expected) ? substr($output, 0, DRUPAL_HASH_LENGTH) : false;
+}
 
 
 /**
@@ -287,9 +279,9 @@ function _password_crypt($algo, $password, $setting)
 function _password_get_count_log2($setting)
 {
     $itoa64 = _password_itoa64();
+
     return strpos($itoa64, $setting[3]);
 }
-
 
 
 /**
@@ -311,9 +303,9 @@ function user_hash_password($password, $count_log2 = 0)
         // Use the standard iteration count.
         $count_log2 = DRUPAL_HASH_COUNT;
     }
+
     return _password_crypt('sha512', $password, _password_generate_salt($count_log2));
 }
-
 
 
 /**
@@ -345,7 +337,6 @@ function user_check_password($password, $stored_hash)
         return false;
     }
 }
-
 
 
 /**

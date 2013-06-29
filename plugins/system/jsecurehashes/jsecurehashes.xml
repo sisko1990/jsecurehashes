@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" version="2.5" group="system" method="upgrade">
+    <name>PLG_SYSTEM_JSECUREHASHES</name>
+    <author>Jan Erik Zassenhaus</author>
+    <creationDate>June 2013</creationDate>
+    <copyright>Copyright (C) 2012 Jan Erik Zassenhaus. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+    <authorEmail>janerik@zassenhaus.net</authorEmail>
+    <authorUrl>http://sourceforge.net/projects/jsecurehashes</authorUrl>
+    <version>2.0</version>
+    <description>PLG_SYSTEM_JSECUREHASHES_XML_DESCRIPTION</description>
+    <files>
+        <filename plugin="jsecurehashes">jsecurehashes.php</filename>
+    </files>
+    <languages folder="languages">
+        <language tag="en-GB">en-GB/en-GB.plg_system_jsecurehashes.ini</language>
+        <language tag="en-GB">en-GB/en-GB.plg_system_jsecurehashes.sys.ini</language>
+        <language tag="de-DE">de-DE/de-DE.plg_system_jsecurehashes.ini</language>
+        <language tag="de-DE">de-DE/de-DE.plg_system_jsecurehashes.sys.ini</language>
+    </languages>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field name="hashalgorithm" type="groupedlist" default="md5-hex"
+                       description="PLG_SYSTEM_JSECUREHASHES_FIELD_HASHALGORITHM_DESC"
+                       label="PLG_SYSTEM_JSECUREHASHES_FIELD_HASHALGORITHM_LABEL">
+                    <group label="PLG_SYSTEM_JSECUREHASHES_FIELD_JOOMLAHASHES_DRUPAL">
+                        <option value="drupal">PLG_SYSTEM_JSECUREHASHES_FIELD_JOOMLAHASHES_DRUPAL_SSHA_512</option>
+                    </group>
+                    <group label="PLG_SYSTEM_JSECUREHASHES_FIELD_JOOMLAHASHES">
+                        <option value="ssha">PLG_SYSTEM_JSECUREHASHES_FIELD_JOOMLAHASHES_SSHA</option>
+                        <option value="sha">PLG_SYSTEM_JSECUREHASHES_FIELD_JOOMLAHASHES_SHA</option>
+                        <option value="crypt">PLG_SYSTEM_JSECUREHASHES_FIELD_JOOMLAHASHES_CRYPT</option>
+                        <option value="smd5">PLG_SYSTEM_JSECUREHASHES_FIELD_JOOMLAHASHES_SMD5</option>
+                        <option value="md5-hex">PLG_SYSTEM_JSECUREHASHES_FIELD_JOOMLAHASHES_MD5_HEX</option>
+                        <option value="aprmd5">PLG_SYSTEM_JSECUREHASHES_FIELD_JOOMLAHASHES_APRMD5</option>
+                        <option value="md5-base64">PLG_SYSTEM_JSECUREHASHES_FIELD_JOOMLAHASHES_MD5_BASE64</option>
+                    </group>
+                </field>
+                <field name="alternative_login" type="list" default="username_only"
+                       description="PLG_SYSTEM_JSECUREHASHES_FIELD_ALTERNATIVE_LOGIN_DESC"
+                       label="PLG_SYSTEM_JSECUREHASHES_FIELD_ALTERNATIVE_LOGIN_LABEL">
+                    <option value="username_only">PLG_SYSTEM_JSECUREHASHES_FIELD_ALTERNATIVE_LOGIN_USERNAME_ONLY</option>
+                    <option value="email_only">PLG_SYSTEM_JSECUREHASHES_FIELD_ALTERNATIVE_LOGIN_EMAIL_ONLY</option>
+                    <option value="username_and_email">PLG_SYSTEM_JSECUREHASHES_FIELD_ALTERNATIVE_LOGIN_BOTH</option>
+                </field>
+                <!--- cs => case sensitivity -->
+                <field name="force_username_login_cs" type="radio" default="0"
+                       description="PLG_SYSTEM_JSECUREHASHES_FIELD_FORCE_USERNAME_CS_DESC"
+                       label="PLG_SYSTEM_JSECUREHASHES_FIELD_FORCE_USERNAME_CS_LABEL">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+            </fieldset>
+        </fields>
+    </config>
+</extension>

@@ -2,17 +2,15 @@
 <extension version="2.5" type="plugin" group="authentication" method="upgrade">
     <name>PLG_AUTH_JSECUREHASHES</name>
     <author>Jan Erik Zassenhaus</author>
-    <creationDate>August 2012</creationDate>
-    <copyright>Copyright (C) 2011 Jan Erik Zassenhaus. All rights reserved.</copyright>
+    <creationDate>June 2013</creationDate>
+    <copyright>Copyright (C) 2012 Jan Erik Zassenhaus. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-    <authorEmail>jan.zassenhaus@jgerman.de</authorEmail>
+    <authorEmail>janerik@zassenhaus.net</authorEmail>
     <authorUrl>www.jgerman.de</authorUrl>
-    <version>1.2</version>
+    <version>2.0</version>
     <description>PLG_AUTH_JSECUREHASHES_XML_DESCRIPTION</description>
     <files>
         <filename plugin="jsecurehashes">jsecurehashes.php</filename>
-        <filename>index.html</filename>
-        <folder>libraries</folder>
     </files>
     <languages>
         <language tag="en-GB">languages/en-GB/en-GB.plg_authentication_jsecurehashes.ini</language>
@@ -23,29 +21,13 @@
     <config>
         <fields name="params">
             <fieldset name="basic">
-                <field name="hashalgorithm" type="groupedlist" default="md5-hex" description="PLG_AUTH_JSECUREHASHES_FIELD_HASHALGORITHM_DESC" label="PLG_AUTH_JSECUREHASHES_FIELD_HASHALGORITHM_LABEL">
-                    <group label="PLG_AUTH_JSECUREHASHES_GROUPFIELD_DRUPALHASH">
-                        <option value="drupal">PLG_AUTH_JSECUREHASHES_GROUPFIELD_DRUPALHASH_SSHA_512</option>
-                    </group>
-                    <group label="PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES">
-                        <option value="ssha">PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES_SSHA</option>
-                        <option value="sha">PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES_SHA</option>
-                        <option value="crypt">PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES_CRYPT</option>
-                        <option value="smd5">PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES_SMD5</option>
-                        <option value="md5-hex">PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES_MD5_HEX</option>
-                        <option value="aprmd5">PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES_APRMD5</option>
-                        <option value="md5-base64">PLG_AUTH_JSECUREHASHES_GROUPFIELD_JOOMLAHASHES_MD5_BASE64</option>
-                    </group>
-                </field>
-                <field name="loginalternative" type="radio" default="username_only" description="PLG_AUTH_JSECUREHASHES_FIELD_LOGINALTERNATIVE_DESC" label="PLG_AUTH_JSECUREHASHES_FIELD_LOGINALTERNATIVE_LABEL">
-					          <option value="username_only">PLG_AUTH_JSECUREHASHES_RADIO_LOGINALTERNATIVE_USERNAME_ONLY</option>
-					          <option value="email_only">PLG_AUTH_JSECUREHASHES_RADIO_LOGINALTERNATIVE_EMAIL_ONLY</option>
-					          <option value="username_and_email">PLG_AUTH_JSECUREHASHES_RADIO_LOGINALTERNATIVE_BOTH</option>
-				        </field>
+                <field name="infotext" type="spacer" class="text" label="PLG_AUTH_JSECUREHASHES_INFOTEXT_DESC" />
             </fieldset>
         </fields>
     </config>
     <updateservers>
-        <server type="collection" priority="1" name="J! Secure Password Hashes">http://update.jupdater.de/extensions.xml</server>
+        <server type="collection" priority="1" name="J! Secure Password Hashes">
+            http://update.jupdater.de/extensions.xml
+        </server>
     </updateservers>
 </extension>
