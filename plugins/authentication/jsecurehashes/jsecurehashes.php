@@ -49,8 +49,9 @@ class plgAuthenticationJSecureHashes extends JPlugin
         $jSecureHashesSystemPluginParams = new JRegistry($jSecureHashesSystemPlugin->params);
 
         // Initialise variables
-        $param_hashalgorithm    = $jSecureHashesSystemPluginParams->get('hashalgorithm', 'md5-hex');
-        $param_alternativeLogin = $jSecureHashesSystemPluginParams->get('alternative_login', 'username_only');
+        $param_hashalgorithm     = $jSecureHashesSystemPluginParams->get('hashalgorithm', 'md5-hex');
+        $param_alternativeLogin  = $jSecureHashesSystemPluginParams->get('alternative_login', 'username_only');
+        $param_force_cs_username = (int) $jSecureHashesSystemPluginParams->get('force_username_login_cs', '0');
 
         // Get a database object
         $db    = JFactory::getDbo();
@@ -61,18 +62,42 @@ class plgAuthenticationJSecureHashes extends JPlugin
 
         if ($param_alternativeLogin === 'username_and_email')
         {
-            $query->where(array(
-                $db->quoteName('username') . ' = ' . $db->quote($credentials['username']),
-                $db->quoteName('email') . ' = ' . $db->quote($credentials['username'])
-            ), 'OR');
+            if ($param_force_cs_username === 1)
+            {
+                $query->where(array(
+                    'BINARY ' . $db->quoteName('username') . ' = ' . $db->quote($credentials['username']),
+                    'BINARY ' . $db->quoteName('email') . ' = ' . $db->quote($credentials['username'])
+                ), 'OR');
+            }
+            else
+            {
+                $query->where(array(
+                    $db->quoteName('username') . ' = ' . $db->quote($credentials['username']),
+                    $db->quoteName('email') . ' = ' . $db->quote($credentials['username'])
+                ), 'OR');
+            }
         }
         elseif ($param_alternativeLogin === 'email_only')
         {
-            $query->where($db->quoteName('email') . ' = ' . $db->quote($credentials['username']));
+            if ($param_force_cs_username === 1)
+            {
+                $query->where('BINARY ' . $db->quoteName('email') . ' = ' . $db->quote($credentials['username']));
+            }
+            else
+            {
+                $query->where($db->quoteName('email') . ' = ' . $db->quote($credentials['username']));
+            }
         }
         else
         {
-            $query->where($db->quoteName('username') . ' = ' . $db->quote($credentials['username']));
+            if ($param_force_cs_username === 1)
+            {
+                $query->where('BINARY ' . $db->quoteName('username') . ' = ' . $db->quote($credentials['username']));
+            }
+            else
+            {
+                $query->where($db->quoteName('username') . ' = ' . $db->quote($credentials['username']));
+            }
         }
 
         $db->setQuery($query);
