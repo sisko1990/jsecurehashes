@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<extension type="library" version="2.5" method="upgrade">
+    <name>J! Secure Password Hashes</name>
+    <libraryname>jsecurehashes</libraryname>
+    <version>2.0</version>
+    <description>LIB_JSECUREHASHES_XML_DESCRIPTION</description>
+    <creationDate>2013</creationDate>
+    <copyright>Copyright (C) 2013 Jan Erik Zassenhaus. All rights reserved.</copyright>
+    <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+    <author>Jan Erik Zassenhaus</author>
+    <authorEmail>janerik@zassenhaus.net</authorEmail>
+    <authorUrl>http://sourceforge.net/projects/jsecurehashes</authorUrl>
+    <packager>Jan Erik Zassenhaus</packager>
+    <packagerurl>http://sourceforge.net/projects/jsecurehashes</packagerurl>
+    <update>http://sourceforge.net/projects/jsecurehashes</update>
+    <languages folder="languages">
+        <language tag="en-GB">en-GB/en-GB.lib_jsecurehashes.ini</language>
+        <language tag="en-GB">en-GB/en-GB.lib_jsecurehashes.sys.ini</language>
+        <language tag="de-DE">de-DE/de-DE.lib_jsecurehashes.ini</language>
+        <language tag="de-DE">de-DE/de-DE.lib_jsecurehashes.sys.ini</language>
+    </languages>
+    <files folder="libraries">
+        <folder>lib</folder>
+        <folder>password</folder>
+    </files>
+</extension>

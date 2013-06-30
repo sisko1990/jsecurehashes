@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<extension type="package" version="2.5" method="upgrade">
+    <name>J! Secure Password Hashes</name>
+    <packagename>jsecurehashes</packagename>
+    <version>2.5.11.1</version>
+    <creationDate>30.06.2013</creationDate>
+    <author>Jan Erik Zassenhaus</author>
+    <authorEmail>janerik@zassenhaus.net</authorEmail>
+    <authorUrl>http://sourceforge.net/projects/jsecurehashes/</authorUrl>
+    <url></url>
+    <packager></packager>
+    <packagerurl></packagerurl>
+    <description><![CDATA[J! Secure Password Hashes]]></description>
+    <files>
+        <file type="library" id="jsecurehashes">lib_jsecurehashes.zip</file>
+        <file type="plugin" group="system" id="jsecurehashes">plg_system_jsecurehashes.zip</file>
+        <file type="plugin" group="authentication" id="jsecurehashes">plg_auth_jsecurehashes.zip</file>
+    </files>
+</extension>
