@@ -18,13 +18,6 @@
         <language tag="de-DE">languages/de-DE/de-DE.plg_authentication_jsecurehashes.ini</language>
         <language tag="de-DE">languages/de-DE/de-DE.plg_authentication_jsecurehashes.sys.ini</language>
     </languages>
-    <config>
-        <fields name="params">
-            <fieldset name="basic">
-                <field name="infotext" type="spacer" class="text" label="PLG_AUTH_JSECUREHASHES_INFOTEXT_DESC" />
-            </fieldset>
-        </fields>
-    </config>
     <updateservers>
         <server type="collection" priority="1" name="J! Secure Password Hashes">
             http://update.jupdater.de/extensions.xml

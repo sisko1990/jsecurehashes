@@ -19,7 +19,18 @@
         <language tag="de-DE">de-DE/de-DE.plg_system_jsecurehashes.sys.ini</language>
     </languages>
     <config>
-        <fields name="params">
+        <fields name="params" addfieldpath="/plugins/system/jsecurehashes/fields">
+            <fieldset name="jshcheck" label="PLG_SYSTEM_JSECUREHASHES_JSHCHECK">
+                <field name="jshsystemplugin" type="jshsystemplugin" description="PLG_SYSTEM_JSECUREHASHES_FIELD_JSHSYSTEMPLUGIN_DESC"
+                       label="PLG_SYSTEM_JSECUREHASHES_FIELD_JSHSYSTEMPLUGIN_LABEL" />
+                <field name="jshauthplugin" type="jshauthplugin" description="PLG_SYSTEM_JSECUREHASHES_FIELD_JSHAUTHPLUGIN_DESC"
+                       label="PLG_SYSTEM_JSECUREHASHES_FIELD_JSHAUTHPLUGIN_LABEL" />
+                <field name="jshlibrary" type="jshlibrary" description="PLG_SYSTEM_JSECUREHASHES_FIELD_JSHLIBRARY_DESC"
+                       label="PLG_SYSTEM_JSECUREHASHES_FIELD_JSHLIBRARY_LABEL" />
+                <field name="spacer1" type="spacer" hr="true" />
+                <field name="jshotherauthplugins" type="jshotherauthplugins" description="PLG_SYSTEM_JSECUREHASHES_FIELD_JSHOTHERAUTHPLUGINS_DESC"
+                       label="PLG_SYSTEM_JSECUREHASHES_FIELD_JSHOTHERAUTHPLUGINS_LABEL" />
+            </fieldset>
             <fieldset name="basic">
                 <field name="hashalgorithm" type="groupedlist" default="md5-hex"
                        description="PLG_SYSTEM_JSECUREHASHES_FIELD_HASHALGORITHM_DESC"
