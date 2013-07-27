@@ -28,7 +28,7 @@ class JFormFieldJshSystemPlugin extends JFormField
             // Plug-in is installed and enabled
             return
                 '<div style="border: 1px solid #a6ca8a; border-radius: 5px; background: #e9ffd9; padding: 8px; float: left; font-weight: bold;">'
-                . JTEXT::_('PLG_SYSTEM_JSECUREHASHES_ENABLED') . '</div>';
+                . JText::_('PLG_SYSTEM_JSECUREHASHES_ENABLED') . '</div>';
         }
         else
         {
@@ -40,14 +40,14 @@ class JFormFieldJshSystemPlugin extends JFormField
                 // Plug-in is installed, but disabled
                 return
                     '<div style="border: 1px solid #f5aca6; border-radius: 5px; background: #ffecec; padding: 8px; float: left; font-weight: bold;">'
-                    . JTEXT::_('PLG_SYSTEM_JSECUREHASHES_DISABLED') . '</div>';
+                    . JText::_('PLG_SYSTEM_JSECUREHASHES_DISABLED') . '</div>';
             }
             else
             {
                 // Plug-in isn't installed
                 return
                     '<div style="border: 1px solid #f5aca6; border-radius: 5px; background: #ffecec; padding: 8px; float: left; font-weight: bold;">'
-                    . JTEXT::_('PLG_SYSTEM_JSECUREHASHES_NOT_INSTALLED') . '</div>';
+                    . JText::_('PLG_SYSTEM_JSECUREHASHES_NOT_INSTALLED') . '</div>';
             }
         }
     }

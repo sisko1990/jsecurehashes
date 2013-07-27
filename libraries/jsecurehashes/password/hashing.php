@@ -34,7 +34,7 @@ class JSecureHashesPasswordHashing
      * @access private
      * @var array
      */
-    private static $availableJHashes = array('ssha', 'sha', 'crypt', 'smd5', 'md5-hex', 'aprmd5', 'md5-base64');
+    private static $availableJHashes = array('ssha', 'sha', 'crypt', 'smd5', 'md5-hex', 'aprmd5');
 
     /**
      * Saves a new password hash in database.

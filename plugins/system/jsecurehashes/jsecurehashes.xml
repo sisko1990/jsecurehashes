@@ -11,6 +11,7 @@
     <description>PLG_SYSTEM_JSECUREHASHES_XML_DESCRIPTION</description>
     <files>
         <filename plugin="jsecurehashes">jsecurehashes.php</filename>
+        <folder>fields</folder>
     </files>
     <languages folder="languages">
         <language tag="en-GB">en-GB/en-GB.plg_system_jsecurehashes.ini</language>
@@ -45,7 +46,6 @@
                         <option value="smd5">PLG_SYSTEM_JSECUREHASHES_FIELD_JOOMLAHASHES_SMD5</option>
                         <option value="md5-hex">PLG_SYSTEM_JSECUREHASHES_FIELD_JOOMLAHASHES_MD5_HEX</option>
                         <option value="aprmd5">PLG_SYSTEM_JSECUREHASHES_FIELD_JOOMLAHASHES_APRMD5</option>
-                        <option value="md5-base64">PLG_SYSTEM_JSECUREHASHES_FIELD_JOOMLAHASHES_MD5_BASE64</option>
                     </group>
                 </field>
                 <field name="alternative_login" type="list" default="username_only"

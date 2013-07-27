@@ -45,7 +45,7 @@ class plgAuthenticationJSecureHashes extends JPlugin
         }
 
         // Get params from the system plugin
-        $jSecureHashesSystemPlugin       = & JPluginHelper::getPlugin('system', 'jsecurehashes');
+        $jSecureHashesSystemPlugin       = JPluginHelper::getPlugin('system', 'jsecurehashes');
         $jSecureHashesSystemPluginParams = new JRegistry($jSecureHashesSystemPlugin->params);
 
         // Initialise variables
@@ -57,6 +57,7 @@ class plgAuthenticationJSecureHashes extends JPlugin
         $db    = JFactory::getDbo();
         $query = $db->getQuery(true);
 
+        // Prepare the SQL query
         $query->select($db->quoteName(array('id', 'password')));
         $query->from($db->quoteName('#__users'));
 
@@ -105,18 +106,50 @@ class plgAuthenticationJSecureHashes extends JPlugin
 
         if ($result)
         {
-            jimport('jsecurehashes.password.hashing');
-            $jsecurehasheslib = new JSecureHashesPasswordHashing();
-            $jsecurehasheslib->setDefaultHashAlgorithm($param_hashalgorithm);
-
-            try
+            // Check if we can use our own library
+            if (jimport('jsecurehashes.password.hashing'))
             {
-                if ($jsecurehasheslib->checkPasswordWithStoredHash($result->password, $credentials['password'],
-                        (int) $result->id) === true
-                )
+                $jsecurehasheslib = new JSecureHashesPasswordHashing();
+                $jsecurehasheslib->setDefaultHashAlgorithm($param_hashalgorithm);
+
+                try
                 {
-                    $user               = JUser::getInstance($result->id);
-                    $response->username = $user->username;
+                    if ($jsecurehasheslib->checkPasswordWithStoredHash($result->password, $credentials['password'],
+                            (int) $result->id) === true)
+                    {
+                        $user               = JUser::getInstance($result->id);
+                        $response->email    = $user->email;
+                        $response->fullname = $user->name;
+
+                        if (JFactory::getApplication()->isAdmin())
+                        {
+                            $response->language = $user->getParam('admin_language');
+                        }
+                        else
+                        {
+                            $response->language = $user->getParam('language');
+                        }
+                        $response->status        = JAuthentication::STATUS_SUCCESS;
+                        $response->error_message = '';
+                    }
+                }
+                catch (Exception $exc)
+                {
+                    $response->status        = JAuthentication::STATUS_FAILURE;
+                    $response->error_message = JText::_($exc->getMessage());
+                }
+            }
+            else
+            {
+                // The user has deleted the library, we use the Joomla! standard authentication procedure
+                $parts     = explode(':', $result->password);
+                $crypt     = $parts[0];
+                $salt      = @$parts[1];
+                $testcrypt = JUserHelper::getCryptedPassword($credentials['password'], $salt);
+
+                if ($crypt == $testcrypt)
+                {
+                    $user               = JUser::getInstance($result->id); // Bring this in line with the rest of the system
                     $response->email    = $user->email;
                     $response->fullname = $user->name;
 
@@ -131,11 +164,11 @@ class plgAuthenticationJSecureHashes extends JPlugin
                     $response->status        = JAuthentication::STATUS_SUCCESS;
                     $response->error_message = '';
                 }
-            }
-            catch (Exception $exc)
-            {
-                $response->status        = JAuthentication::STATUS_FAILURE;
-                $response->error_message = JText::_($exc->getMessage());
+                else
+                {
+                    $response->status        = JAuthentication::STATUS_FAILURE;
+                    $response->error_message = JText::_('JGLOBAL_AUTH_INVALID_PASS');
+                }
             }
         }
         else
