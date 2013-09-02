@@ -58,51 +58,38 @@ class plgAuthenticationJSecureHashes extends JPlugin
         $query = $db->getQuery(true);
 
         // Prepare the SQL query
-        $query->select($db->quoteName(array('id', 'password')));
+        $query->select($db->quoteName(array('id', 'username', 'password')));
         $query->from($db->quoteName('#__users'));
 
         if ($param_alternativeLogin === 'username_and_email')
         {
-            if ($param_force_cs_username === 1)
-            {
-                $query->where(array(
-                    'BINARY ' . $db->quoteName('username') . ' = ' . $db->quote($credentials['username']),
-                    'BINARY ' . $db->quoteName('email') . ' = ' . $db->quote($credentials['username'])
-                ), 'OR');
-            }
-            else
-            {
-                $query->where(array(
-                    $db->quoteName('username') . ' = ' . $db->quote($credentials['username']),
-                    $db->quoteName('email') . ' = ' . $db->quote($credentials['username'])
-                ), 'OR');
-            }
+            $query->where(array(
+                $db->quoteName('username') . ' = ' . $db->quote($credentials['username']),
+                $db->quoteName('email') . ' = ' . $db->quote($credentials['username'])
+            ), 'OR');
         }
         elseif ($param_alternativeLogin === 'email_only')
         {
-            if ($param_force_cs_username === 1)
-            {
-                $query->where('BINARY ' . $db->quoteName('email') . ' = ' . $db->quote($credentials['username']));
-            }
-            else
-            {
-                $query->where($db->quoteName('email') . ' = ' . $db->quote($credentials['username']));
-            }
+            $query->where($db->quoteName('email') . ' = ' . $db->quote($credentials['username']));
         }
         else
         {
-            if ($param_force_cs_username === 1)
-            {
-                $query->where('BINARY ' . $db->quoteName('username') . ' = ' . $db->quote($credentials['username']));
-            }
-            else
-            {
-                $query->where($db->quoteName('username') . ' = ' . $db->quote($credentials['username']));
-            }
+            $query->where($db->quoteName('username') . ' = ' . $db->quote($credentials['username']));
         }
 
+        // Get the results from database
         $db->setQuery($query);
         $result = $db->loadObject();
+
+        // Should we check for upper and lower case in username?
+        if (($param_force_cs_username === 1) && (!is_null($result)))
+        {
+            // Test if username is exactly the same, otherwise it is an error
+            if ($result->username !== $credentials['username'])
+            {
+                $result = null;
+            }
+        }
 
         if ($result)
         {
@@ -141,7 +128,7 @@ class plgAuthenticationJSecureHashes extends JPlugin
             }
             else
             {
-                // The user has deleted the library, we use the Joomla! standard authentication procedure
+                // The user has deleted the library, we use the Joomla! standard authentication procedure as an emergency plan
                 $parts     = explode(':', $result->password);
                 $crypt     = $parts[0];
                 $salt      = @$parts[1];
