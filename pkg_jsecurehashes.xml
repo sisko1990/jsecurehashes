@@ -3,17 +3,20 @@
     <name>J! Secure Password Hashes</name>
     <packagename>jsecurehashes</packagename>
     <version>2.0</version>
-    <creationDate>30.06.2013</creationDate>
+    <creationDate>2013-09-11</creationDate>
     <author>Jan Erik Zassenhaus</author>
     <authorEmail>janerik@zassenhaus.net</authorEmail>
     <authorUrl>http://sourceforge.net/projects/jsecurehashes/</authorUrl>
     <url></url>
     <packager></packager>
     <packagerurl></packagerurl>
-    <description><![CDATA[J! Secure Password Hashes]]></description>
+    <description><![CDATA[<h2>J! Secure Password Hashes</h2>Please start the quick configuration at the system plug-in.]]></description>
     <files>
         <file type="library" id="jsecurehashes">lib_jsecurehashes.zip</file>
         <file type="plugin" group="system" id="jsecurehashes">plg_system_jsecurehashes.zip</file>
         <file type="plugin" group="authentication" id="jsecurehashes">plg_auth_jsecurehashes.zip</file>
     </files>
+    <updateservers>
+        <server type="collection" priority="1" name="J! Secure Password Hashes">http://update.jupdater.de/extensions.xml</server>
+    </updateservers>
 </extension>

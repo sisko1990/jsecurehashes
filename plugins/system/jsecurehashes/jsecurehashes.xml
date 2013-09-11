@@ -2,7 +2,7 @@
 <extension type="plugin" version="2.5" group="system" method="upgrade">
     <name>PLG_SYSTEM_JSECUREHASHES</name>
     <author>Jan Erik Zassenhaus</author>
-    <creationDate>June 2013</creationDate>
+    <creationDate>2013-09-11</creationDate>
     <copyright>Copyright (C) 2012 Jan Erik Zassenhaus. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>janerik@zassenhaus.net</authorEmail>

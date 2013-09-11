@@ -2,7 +2,7 @@
 <extension version="2.5" type="plugin" group="authentication" method="upgrade">
     <name>PLG_AUTH_JSECUREHASHES</name>
     <author>Jan Erik Zassenhaus</author>
-    <creationDate>June 2013</creationDate>
+    <creationDate>2013-09-11</creationDate>
     <copyright>Copyright (C) 2012 Jan Erik Zassenhaus. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>janerik@zassenhaus.net</authorEmail>
@@ -18,9 +18,4 @@
         <language tag="de-DE">languages/de-DE/de-DE.plg_authentication_jsecurehashes.ini</language>
         <language tag="de-DE">languages/de-DE/de-DE.plg_authentication_jsecurehashes.sys.ini</language>
     </languages>
-    <updateservers>
-        <server type="collection" priority="1" name="J! Secure Password Hashes">
-            http://update.jupdater.de/extensions.xml
-        </server>
-    </updateservers>
 </extension>
